@@ -39,3 +39,15 @@ class IngredientModelTests(TestCase):
 
     def test_ingredient_links_to_recipe(self):
         self.assertEqual(self.ingredient.recipe, self.recipe)
+
+    def test_default_is_checked_false(self):
+        ingredient = Ingredient.objects.create(recipe=self.recipe, name='Olive oil')
+        self.assertFalse(ingredient.is_checked)
+
+    def test_updating_ingredient_check(self):
+        ingredient = Ingredient.objects.create(recipe=self.recipe, name='Garlic')
+        ingredient.is_checked = True
+        ingredient.save()
+        ingredient.refresh_from_db()
+        self.assertTrue(ingredient.is_checked)
+

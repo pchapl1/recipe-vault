@@ -36,3 +36,26 @@ class IngredientAPITests(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data), 1)
+
+    def test_retrieve_ingredient(self):
+        ingredient = Ingredient.objects.create(recipe=self.recipe, name='Salt', quantity='1', unit='tsp')
+        url = reverse('ingredient-detail', args=[ingredient.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'Salt')
+
+    def test_update_ingredient(self):
+        ingredient = Ingredient.objects.create(recipe=self.recipe, name='Sugar', quantity='1', unit='cup')
+        url = reverse('ingredient-detail', args=[ingredient.id])
+        response = self.client.patch(url, {'is_checked': True}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        ingredient.refresh_from_db()
+        self.assertTrue(ingredient.is_checked)
+
+    def test_delete_ingredient(self):
+        ingredient = Ingredient.objects.create(recipe=self.recipe, name='Honey', quantity='2', unit='tbsp')
+        url = reverse('ingredient-detail', args=[ingredient.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Ingredient.objects.count(), 0)
+
