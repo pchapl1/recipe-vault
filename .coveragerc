@@ -4,6 +4,7 @@ omit =
     */migrations/*
     */tests/*
     */__init__.py
+    manage.py
 
 [report]
 show_missing = True
