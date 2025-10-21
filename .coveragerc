@@ -1,0 +1,10 @@
+[run]
+source = server/recipes
+omit =
+    */migrations/*
+    */tests/*
+    */__init__.py
+
+[report]
+show_missing = True
+skip_covered = False
