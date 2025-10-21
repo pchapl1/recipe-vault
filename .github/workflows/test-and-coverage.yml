@@ -50,21 +50,21 @@ jobs:
       run: |
         python manage.py migrate
 
-    - name: 🧪 Run tests with coverage
+    - name: 🧪 Run tests with coverage in parallel
       working-directory: server
       run: |
-        coverage run manage.py test
-        coverage report --fail-under=85
+        coverage run --parallel-mode manage.py test --parallel 4
 
-    - name: 📊 Upload coverage report as artifact
+    - name: 📊 Combine coverage and generate report
+      working-directory: server
+      run: |
+        coverage combine
+        coverage report --fail-under=85
+        coverage html
+
+    - name: 📈 Upload coverage report as artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: server/htmlcov
-
-    - name: 📈 Generate HTML coverage
-      if: always()
-      working-directory: server
-      run: |
-        coverage html
